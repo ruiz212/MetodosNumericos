@@ -1,30 +1,43 @@
 import math
-import numpy as np
-import matplotlib.pyplot as plt
 
-x = math.radians(47)
-a = math.radians(45)
+# 1. Pedimos los datos al usuario
+x_grados = float(input("Ingrese el ángulo a calcular (ej. 47): "))
+a_grados = float(input("Ingrese el ángulo base (ej. 45): "))
+grado = int(input("Ingrese el grado del polinomio: "))
 
-y = np.sin(x)
+# ¡IMPORTANTE! Las fórmulas matemáticas en programación exigen radianes
+x = math.radians(x_grados)
+a = math.radians(a_grados)
 
-# Taylor series expansion of sin(x) around a = pi/4
-p0 = round(math.sin(a),7)
-p1 = round(p0 + math.cos(a) * (x - a),7)
-p2 = round(p1 - (math.sin(a) / 2) * (x - a)**2,7)
-p3 = round(p2 - (math.cos(a) / 6) * (x - a)**3,7)
+Aproximacion = 0.0
 
-print("Valor real de sen(47°):", math.sin(x))
-print("-----------------------------------")
-print("Aproximación P0:", p0)
-print("Aproximación P1:", p1)
-print("Aproximación P2:", p2)
-print("Aproximación P3:", p3)
+print("\n" + "="*50)
+print(f" Calculando Taylor para sen({x_grados}°) centrado en {a_grados}°")
+print(f" Valor real en calculadora: {math.sin(x):.8f}")
+print("="*50 + "\n")
 
-R0 = math.cos(a) * (x - a)
-R1 = - (math.sin(a) / 2) * (x - a)**2
-R2 = - (math.cos(a) / 6) * (x - a)**3
-
-print("-----------------------------------")
-print("Resto R0:", R0)
-print("Resto R1:", R1)
-print("Resto R2:", R2)
+# 2. El bucle matemático
+for n in range(grado + 1):
+    
+    # Automatizamos la derivada usando el ciclo de 4 pasos
+    ciclo = n % 4
+    
+    if ciclo == 0:
+        derivada_a = math.sin(a)
+    elif ciclo == 1:
+        derivada_a = math.cos(a)
+    elif ciclo == 2:
+        derivada_a = -math.sin(a)
+    elif ciclo == 3:
+        derivada_a = -math.cos(a)
+        
+    # Aplicamos la fórmula completa de Taylor
+    termino = (derivada_a / math.factorial(n)) * ((x - a) ** n)
+    
+    # Acumulamos el resultado
+    Aproximacion += termino
+    
+    print(f"--- GRADO {n} ---")
+    print(f"Derivada usada: paso {ciclo} del ciclo")
+    print(f"Término sumado/restado: {termino: .8f}")
+    print(f"Aproximación actual:    {Aproximacion: .8f}\n")
